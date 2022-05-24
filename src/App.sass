@@ -1,0 +1,56 @@
+*
+  margin: 0
+  padding: 0
+  box-sizing: border-box
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap')
+
+.app__container
+  width: 100vw
+  height: 100vh
+  padding: 10px
+  display: flex
+  justify-content: center
+  align-items: center
+  background: linear-gradient(45deg, royalBlue, #17cf36)
+  font-family: 'Roboto', sans-serif
+
+.wheel
+  &__container
+    width: 500px
+    height: 500px
+    border-radius: 50%
+    border: 5px solid #fff
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.75)
+    overflow: hidden
+    background: tomato
+    position: relative
+    &::after
+      content: ''
+      display: block
+      width: 10px
+      height: 10px
+      border-radius: 50%
+      border: 2px solid #fff
+      position: absolute
+      left: 50%
+      top: 50%
+      transform: translate(-50%, -50%)
+      background: royalBlue
+  &__value
+    position: absolute
+    left: 50%
+    top: 25%
+    transform: translate(-50%, -50%) rotate(-90deg)
+    color: #fff
+    padding: 5px 10px
+    background: rgba(0,0,0,0.75)
+    border-radius: 5px
+  &__cursor
+    width: 5px
+    height: 50%
+    position: absolute
+    left: 50%
+    top: 50%
+    transform-origin: bottom center
+    background: #000
