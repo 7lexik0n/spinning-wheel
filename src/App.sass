@@ -16,31 +16,34 @@
   font-family: 'Roboto', sans-serif
 
 .wheel
+  width: 500px
+  height: 500px
+  border-radius: 50%
+  border: 5px solid #fff
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.75)
+  overflow: hidden
+  background: #fff
+  position: relative
+  margin: 0 auto
   &__container
-    width: 500px
-    height: 500px
-    border-radius: 50%
-    border: 5px solid #fff
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.75)
-    overflow: hidden
-    background: tomato
     position: relative
-    &::after
-      content: ''
-      display: block
-      width: 10px
-      height: 10px
-      border-radius: 50%
-      border: 2px solid #fff
-      position: absolute
-      left: 50%
-      top: 50%
-      transform: translate(-50%, -50%)
-      background: royalBlue
+  &__dot
+    content: ''
+    display: block
+    width: 10px
+    height: 10px
+    border-radius: 50%
+    border: 2px solid #fff
+    position: absolute
+    left: 50%
+    top: 50%
+    transform: translate(-50%, -50%)
+    background: royalBlue
+    z-index: 99
   &__value
     position: absolute
     left: 50%
-    top: 25%
+    top: 18%
     transform: translate(-50%, -50%) rotate(-90deg)
     color: #fff
     padding: 5px 10px
@@ -54,3 +57,31 @@
     top: 50%
     transform-origin: bottom center
     background: #000
+    z-index: 98
+  &__target
+    width: auto
+    height: 40px
+    border: 3px solid royalBlue
+    border-radius: 15px
+    position: absolute
+    left: 50%
+    top: 0
+    transform: translate(-50%, calc(-100% - 20px))
+    z-index: 100
+    &::before
+      content: ''
+      display: block
+      position: absolute
+      width: 0px
+      height: 0px
+      left: 50%
+      bottom: 0
+      transform: translate(-50%, 100%)
+      border: 25px solid transparent
+      border-top: 15px solid  royalBlue
+
+.form
+  &__title
+    text-align: center
+    text-transform: uppercase
+    padding: 10px
