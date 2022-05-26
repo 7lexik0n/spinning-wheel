@@ -59,22 +59,25 @@ const Form = ({ variants, addVariant, removeVariant, launchWheel }) => {
       </Box>
       {variants && (
         <List dense={false}>
-          {variants.map((variant) => (
-            <ListItem
-              key={variant.id}
-              secondaryAction={
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={() => onRemove(variant.id)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              }
-            >
-              <ListItemText primary={variant.value} />
-            </ListItem>
-          ))}
+          {variants.map((variant) => {
+            const val = variant.value.length > 30 ? `${variant.value.slice(0, 30)}...` : variant.value;
+            return (
+              <ListItem
+                key={variant.id}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => onRemove(variant.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                }
+              >
+                <ListItemText primary={val} />
+              </ListItem>
+            );
+          })}
         </List>
       )}
       {variants && variants.length > 1 && (

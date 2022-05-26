@@ -36,25 +36,31 @@ const App = () => {
 
   const stopWheel = () => {
     setRotating(false);
-  }
+  };
 
   return (
     <ThemeProvider theme={darkTheme}>
       <div className="app__container">
         <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} justifyContent="center">
             <Grid
               item
-              xs={8}
+              xs={12}
+              md={6}
+              lg={8}
               sx={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
-              <Wheel variants={variants} rotating={rotating} stopWheel={stopWheel} />
+              <Wheel
+                variants={variants}
+                rotating={rotating}
+                stopWheel={stopWheel}
+              />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item lg={4} md={6} xs={12} className="form">
               <Form
                 variants={variants}
                 addVariant={addVariant}

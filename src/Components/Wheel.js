@@ -6,10 +6,32 @@ const getRandomColor = () => {
   return Math.floor(Math.random() * 16777215).toString(16);
 };
 
+const sliceWord = (word) => {
+  return word.length > 10 ? `${word.slice(0, 10)}...` : word;
+};
+
+const Template = ({ styles = {}, colors, index, value }) => (
+  <div
+    className="wheel__segment"
+    style={{
+      position: "absolute",
+      left: "0",
+      top: "0",
+      width: "100%",
+      height: "100%",
+      background: colors[index],
+      ...styles,
+    }}
+  >
+    <span className="wheel__value">{sliceWord(value)}</span>
+  </div>
+);
+
 const Wheel = ({ variants, rotating, stopWheel }) => {
   const [rotAngle, setRotAngle] = useState(0);
   const controls = useAnimation();
   const [winValue, setWinValue] = useState("");
+  const [colors, setColors] = useState([]);
 
   const getValueFromAngle = (angle) => {
     if (variants.length === 2) {
@@ -17,8 +39,6 @@ const Wheel = ({ variants, rotating, stopWheel }) => {
     }
 
     if (variants.length === 3) {
-      console.log(variants);
-      console.log(angle);
       if (angle >= 60 && angle < 180) {
         return variants[1];
       } else if (angle >= 180 && angle < 300) {
@@ -41,11 +61,15 @@ const Wheel = ({ variants, rotating, stopWheel }) => {
 
   useEffect(() => {
     if (rotating) {
-      const angle =
-        180 +
-        Math.round(Math.random() * 4) * 360 +
-        Math.floor(Math.random() * 360);
+      let angle =
+        Math.round(Math.random() * 4) * 360 + Math.floor(Math.random() * 360);
+
+      if (Math.abs(rotAngle - angle) < 1080) {
+        angle = rotAngle + angle + 1080;
+      }
+
       setRotAngle(angle);
+
       controls.start({
         transform: `rotate(-${angle}deg)`,
         transition: {
@@ -56,7 +80,6 @@ const Wheel = ({ variants, rotating, stopWheel }) => {
             const finishAngle = angle % 360;
             const finalValue = getValueFromAngle(finishAngle);
             setWinValue(finalValue.value);
-            console.log(finalValue.value);
             stopWheel();
           },
         },
@@ -67,7 +90,12 @@ const Wheel = ({ variants, rotating, stopWheel }) => {
   }, [rotating]);
 
   useEffect(() => {
+    const newColors = [];
+    variants.forEach(() => {
+      newColors.push(`#${getRandomColor()}`);
+    });
     setWinValue("");
+    setColors(newColors);
   }, [variants]);
 
   useEffect(() => {
@@ -78,53 +106,24 @@ const Wheel = ({ variants, rotating, stopWheel }) => {
 
   let content =
     variants.length > 0 ? (
-      <div
-        className="wheel__segment"
-        style={{
-          position: "absolute",
-          left: "0",
-          top: "0",
-          width: "100%",
-          height: "100%",
-          background: `#${getRandomColor()}`,
-        }}
-      >
-        <span className="wheel__value">{variants[0].value}</span>
-      </div>
+      <Template colors={colors} index={0} value={variants[0].value} />
     ) : null;
 
   if (variants.length === 2) {
     content = (
       <>
-        <div
-          className="wheel__segment"
-          style={{
-            position: "absolute",
-            left: "0",
-            top: "0",
-            width: "100%",
-            height: "100%",
-            background: `#${getRandomColor()}`,
-            clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)",
-          }}
-        >
-          <span className="wheel__value">{variants[0].value}</span>
-        </div>
-        <div
-          className="wheel__segment"
-          style={{
-            position: "absolute",
-            left: "0",
-            top: "0",
-            width: "100%",
-            height: "100%",
-            background: `#${getRandomColor()}`,
-            clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)",
-            transform: "rotate(180deg)",
-          }}
-        >
-          <span className="wheel__value">{variants[1].value}</span>
-        </div>
+        {variants.map((variant, index) => (
+          <Template
+            key={variant.id}
+            colors={colors}
+            index={index}
+            value={variants[index].value}
+            styles={{
+              clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)",
+              transform: `rotate(${180 * index}deg)`,
+            }}
+          />
+        ))}
       </>
     );
   }
@@ -132,51 +131,18 @@ const Wheel = ({ variants, rotating, stopWheel }) => {
   if (variants.length === 3) {
     content = (
       <>
-        <div
-          className="wheel__segment"
-          style={{
-            position: "absolute",
-            left: "0",
-            top: "0",
-            width: "100%",
-            height: "100%",
-            background: `#${getRandomColor()}`,
-            clipPath: "polygon(50% 50%, 100% 22.5%, 100% 0, 0 0, 0 22.5%)",
-            transform: "rotate(0deg)",
-          }}
-        >
-          <span className="wheel__value">{variants[0].value}</span>
-        </div>
-        <div
-          className="wheel__segment"
-          style={{
-            position: "absolute",
-            left: "0",
-            top: "0",
-            width: "100%",
-            height: "100%",
-            background: `#${getRandomColor()}`,
-            clipPath: "polygon(50% 50%, 100% 22.5%, 100% 0, 0 0, 0 22.5%)",
-            transform: "rotate(120deg)",
-          }}
-        >
-          <span className="wheel__value">{variants[1].value}</span>
-        </div>
-        <div
-          className="wheel__segment"
-          style={{
-            position: "absolute",
-            left: "0",
-            top: "0",
-            width: "100%",
-            height: "100%",
-            background: `#${getRandomColor()}`,
-            clipPath: "polygon(50% 50%, 100% 22.5%, 100% 0, 0 0, 0 22.5%)",
-            transform: "rotate(240deg)",
-          }}
-        >
-          <span className="wheel__value">{variants[2].value}</span>
-        </div>
+        {variants.map((variant, index) => (
+          <Template
+            key={variant.id}
+            colors={colors}
+            index={index}
+            value={variants[index].value}
+            styles={{
+              clipPath: "polygon(50% 50%, 100% 22.5%, 100% 0, 0 0, 0 22.5%)",
+              transform: `rotate(${120 * index}deg)`,
+            }}
+          />
+        ))}
       </>
     );
   }
@@ -188,29 +154,21 @@ const Wheel = ({ variants, rotating, stopWheel }) => {
 
     content = (
       <>
-        {variants.map((variant, index) => {
-          return (
-            <div
-              key={index}
-              className="wheel__segment"
-              style={{
-                position: "absolute",
-                left: "0",
-                top: "0",
-                width: "100%",
-                height: "100%",
-                background: `#${getRandomColor()}`,
-                clipPath: `polygon(50% 50%, ${percents}% 0%, ${
-                  100 - percents
-                }% 0%)`,
-                zIndex: `${index}`,
-                transform: `rotate(${angle * index}deg)`,
-              }}
-            >
-              <span className="wheel__value">{variant.value}</span>
-            </div>
-          );
-        })}
+        {variants.map((variant, index) => (
+          <Template
+            key={variant.id}
+            colors={colors}
+            index={index}
+            value={variants[index].value}
+            styles={{
+              clipPath: `polygon(50% 50%, ${percents}% 0%, ${
+                100 - percents
+              }% 0%)`,
+              zIndex: `${index}`,
+              transform: `rotate(${angle * index}deg)`,
+            }}
+          />
+        ))}
       </>
     );
   }
