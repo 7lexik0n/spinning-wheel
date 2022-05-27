@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   Paper,
@@ -8,25 +8,52 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemIcon,
   Button,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
-const Form = ({ variants, addVariant, removeVariant, launchWheel }) => {
+const Form = ({
+  variants,
+  addVariant,
+  removeVariant,
+  launchWheel,
+  edit,
+  setEdit,
+  editVariant,
+}) => {
   const [value, setValue] = useState("");
+  const inputEl = useRef(null);
 
   const handleChange = (evt) => {
     setValue(evt.target.value);
   };
 
+  const onSubmit = (evt) => {
+    evt.preventDefault();
+    onAdd();
+  };
+
   const onAdd = () => {
-    addVariant(value.trim());
-    setValue("");
+    const val = value.trim();
+    if (val !== "") {
+      edit ? editVariant(val) : addVariant(val);
+      setValue("");
+      setEdit(null);
+    }
   };
 
   const onRemove = (id) => {
     removeVariant(id);
+  };
+
+  const onEdit = (id) => {
+    const currentVar = variants.find((variant) => variant.id === id);
+    setValue(currentVar.value);
+    setEdit(id);
+    inputEl.current.focus();
   };
 
   return (
@@ -35,18 +62,22 @@ const Form = ({ variants, addVariant, removeVariant, launchWheel }) => {
         Список вариантов
       </Typography>
       <Box
+        component="form"
         sx={{
           p: "2px 10px",
+          paddingLeft: "22px",
           display: "flex",
           alignItems: "space-between",
           width: "100%",
         }}
+        onSubmit={onSubmit}
       >
         <InputBase
           sx={{ flex: 1 }}
           placeholder="Введите свой вариант"
           value={value}
           onChange={handleChange}
+          inputRef={inputEl}
         />
         <IconButton
           color="primary"
@@ -58,9 +89,12 @@ const Form = ({ variants, addVariant, removeVariant, launchWheel }) => {
         </IconButton>
       </Box>
       {variants && (
-        <List dense={false}>
+        <List dense={false} sx={{ paddingRight: "8px" }}>
           {variants.map((variant) => {
-            const val = variant.value.length > 30 ? `${variant.value.slice(0, 30)}...` : variant.value;
+            const val =
+              variant.value.length > 30
+                ? `${variant.value.slice(0, 30)}...`
+                : variant.value;
             return (
               <ListItem
                 key={variant.id}
@@ -74,6 +108,15 @@ const Form = ({ variants, addVariant, removeVariant, launchWheel }) => {
                   </IconButton>
                 }
               >
+                <ListItemIcon>
+                  <IconButton
+                    edge="end"
+                    aria-label="edit"
+                    onClick={() => onEdit(variant.id)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </ListItemIcon>
                 <ListItemText primary={val} />
               </ListItem>
             );

@@ -12,6 +12,7 @@ const darkTheme = createTheme({
 
 const App = () => {
   const [variants, setVariants] = useState([]);
+  const [edit, setEdit] = useState(null);
   const [rotating, setRotating] = useState(false);
 
   const addVariant = (variant) => {
@@ -36,6 +37,18 @@ const App = () => {
 
   const stopWheel = () => {
     setRotating(false);
+  };
+
+  const editVariant = (value) => {
+    const index = variants.findIndex((variant) => variant.id === edit);
+    const newVariants = [...variants];
+    
+    newVariants[index] = {
+      value,
+      id: edit,
+    };
+
+    setVariants(newVariants);
   };
 
   return (
@@ -66,6 +79,9 @@ const App = () => {
                 addVariant={addVariant}
                 removeVariant={removeVariant}
                 launchWheel={launchWheel}
+                edit={edit}
+                setEdit={setEdit}
+                editVariant={editVariant}
               />
             </Grid>
           </Grid>
