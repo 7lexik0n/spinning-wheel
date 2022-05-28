@@ -51,4 +51,9 @@ module.exports = {
       template: path.resolve(__dirname, `./src/index.html`),
     }),
   ],
+  performance: {
+    hints: false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
+  },
 };

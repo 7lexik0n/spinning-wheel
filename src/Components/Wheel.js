@@ -192,7 +192,7 @@ const Wheel = ({ variants, rotating, stopWheel }) => {
             component="span"
             sx={{ p: "5px 30px 0px", color: "#fff", display: "inline-block" }}
           >
-            {winValue}
+            {winValue.length > 30 ? `${winValue.slice(0, 28)}...` : winValue}
           </Typography>
         )}
       </div>
